@@ -1,5 +1,6 @@
 var PORT = 3000;
 var express = require('express');
+console.log('express acquired');
 var request = require('request');
 var ejs = require('ejs');
 var path = require('path');
@@ -15,7 +16,33 @@ app.use(bodyParser.urlencoded({
   extended:false
 }));
 app.use(bodyParser.json());
+console.log("Post Service Acquired")
 
+const _ = require("lodash")
+
+//Database
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/hackathon', { useNewUrlParser: true });
+console.log("Database Created");
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+
+const userschema = new Schema({
+
+  first:String,
+  last:String,
+  email:String,
+  phone:String,
+  type:String,
+  pass:String,
+});
+
+const usermodel = mongoose.model("user", userschema);
 
 app.get('/', function(req, res){
 	res.render("index");
@@ -37,9 +64,51 @@ app.get('/services',(req,res)=>{
   res.render("services");
 });
 
-app.get('/blog',(req,res)=>{
-  res.render("blog");
-});
+app.get('/login',(req,res)=>{
+  res.render('login',{mesg:null})
+})
+
+app.post('/login',(req,res)=>{
+  usermodel.findOne({ email: req.body.email, pass: req.body.pass }, function (err, doc) {
+    if (err) {
+        console.log(err, 'error')
+        res.redirect('/')
+        return
+    }
+    if (_.isEmpty(doc)) {
+        res.render('login', { message: "Please check email/password" })
+    } else {
+        res.redirect('/')
+    }
+})
+})
+
+app.get('/register',(req,res)=>{
+  res.render('signup')
+})
+
+app.post('/register',(req,res)=>{
+  console.log(req.body);
+  if(req.body.submit){
+    let newuser = new usermodel()
+        newuser.first = req.body.first_name
+        newuser.last = req.body.last_name
+        newuser.email = req.body.email
+        newuser.phone = req.body.phone
+        newuser.type = req.body.subject
+        newuser.pass=req.body.pass
+        newuser.save(function (err) {
+            if (err) {
+                console.log(err)
+                return
+            }
+            else {
+                res.render('signup')
+            }
+        });
+  }
+  res.render('login',{mesg:"You Successfully Registered"})
+})
 
 app.listen(PORT,(req,res) => {
 	console.log('App on 3000');
