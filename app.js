@@ -18,18 +18,28 @@ app.use(bodyParser.json());
 
 
 app.get('/', function(req, res){
-	res.render("home");
+	res.render("index");
 });
 
 app.get('/contact',(req,res) =>{
   res.render("contact");
 });
 
-app.get('/about-us',(req,res)=>{
-  res.render("about-us");
+app.get('/about',(req,res)=>{
+  res.render("about");
 });
 
+app.get('/causes',(req,res)=>{
+  res.render("causes");
+});
 
+app.get('/services',(req,res)=>{
+  res.render("services");
+});
+
+app.get('/blog',(req,res)=>{
+  res.render("blog");
+});
 
 app.listen(PORT,(req,res) => {
 	console.log('App on 3000');
