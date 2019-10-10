@@ -78,7 +78,7 @@ app.post('/login',(req,res)=>{
     if (_.isEmpty(doc)) {
         res.render('login', { message: "Please check email/password" })
     } else {
-        res.redirect('/')
+        res.render('scanner',{message:doc.name,amount:"1500"})
     }
 })
 })
@@ -108,6 +108,10 @@ app.post('/register',(req,res)=>{
         });
   }
   res.render('login',{mesg:"You Successfully Registered"})
+})
+
+app.get('/scanner',(req,res)=>{
+  res.render('scanner',{message:"null",amount:"null"})
 })
 
 app.listen(PORT,(req,res) => {
