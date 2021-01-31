@@ -1,4 +1,3 @@
-var PORT = 3000;
 var express = require('express');
 console.log('express acquired');
 var request = require('request');
@@ -7,6 +6,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
 var app = express();
+require('dotenv').config()
 app.engine('handlebars',exphbs());
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'vendor')));
@@ -18,11 +18,11 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 console.log("Post Service Acquired")
 
-const _ = require("lodash")
+const _ = require("lodash");
 
 //Database
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/hackathon', { useNewUrlParser: true });
+mongoose.connect(process.env.URI, { useNewUrlParser: true });
 console.log("Database Created");
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -78,7 +78,7 @@ app.post('/login',(req,res)=>{
     if (_.isEmpty(doc)) {
         res.render('login', { message: "Please check email/password" })
     } else {
-        res.render('scanner',{message:doc.name,amount:"1500"})
+        res.render('/scanner'+doc._id);
     }
 })
 })
@@ -88,7 +88,6 @@ app.get('/register',(req,res)=>{
 })
 
 app.post('/register',(req,res)=>{
-  console.log(req.body);
   if(req.body.submit){
     let newuser = new usermodel()
         newuser.first = req.body.first_name
@@ -107,13 +106,18 @@ app.post('/register',(req,res)=>{
             }
         });
   }
-  res.render('login',{mesg:"You Successfully Registered"})
+  res.redirect('/login');
 })
 
-app.get('/scanner',(req,res)=>{
-  res.render('scanner',{message:"null",amount:"null"})
-})
+app.get('/scanner:user',(req,res)=>{
+  if(req.params.user==null){
+    res.render('scanner',{message:"null",amount:"null"})
+  }
+  else{
+    
+  }
+});
 
-app.listen(PORT,(req,res) => {
+app.listen(3000,(req,res) => {
 	console.log('App on 3000');
 });

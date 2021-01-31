@@ -18,10 +18,11 @@
   "homepage": "https://github.com/ammumike/Hackathon-1#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "ejs": "^2.7.1",
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "mongodb": "^3.3.2",
     "mongoose": "^5.7.4",
     "package.json": "^2.0.1",
